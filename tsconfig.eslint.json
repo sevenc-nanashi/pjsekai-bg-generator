@@ -1,0 +1,15 @@
+{
+    "resolveJsonModule": true,
+    "extends": "./tsconfig.json",
+    "include": [
+      "*.ts",
+      "**/*.ts",
+      ".eslintrc.js",
+      "types/express.d.ts",
+      "types/sonolus-express.d.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "dist"
+    ]
+}
