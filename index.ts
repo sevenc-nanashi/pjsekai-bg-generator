@@ -1,6 +1,5 @@
 import Sharp from 'sharp'
 import fs from 'fs'
-import sharp from 'sharp'
 
 class PJSekaiBackgroundGenerator {
     baseImg!: Sharp.Sharp
@@ -34,7 +33,7 @@ class PJSekaiBackgroundGenerator {
     /**
     * 透明度指定するやつ
     */
-    setOpacity(sharpObject: sharp.Sharp, opacityFloat: number): sharp.Sharp {
+    setOpacity(sharpObject: Sharp.Sharp, opacityFloat: number): Sharp.Sharp {
       const opacityInt: number = this.mapRange(opacityFloat, 0, 1, 1, 255)
       const resp = sharpObject.clone().composite([{
         input: Buffer.from([255, 255, 255, opacityInt]),
@@ -52,12 +51,11 @@ class PJSekaiBackgroundGenerator {
     /**
     * マスクを指定して切り抜くやつ
     */
-    async setMask(sharpObject: sharp.Sharp, maskObject: sharp.Sharp): Promise<sharp.Sharp> {
+    async setMask(sharpObject: Sharp.Sharp, maskObject: Sharp.Sharp): Promise<Sharp.Sharp> {
       const buf = await maskObject.toBuffer()
       const resp = sharpObject.clone().composite([
         {
           input: buf,
-          gravity: 'center',
           blend: 'xor'
         }
       ])
@@ -80,7 +78,7 @@ class PJSekaiBackgroundGenerator {
         const jacketBuffer = await jacketMain.toBuffer()
         // 下 配置:797 683 サイズ:450x450 不透明度:1%
         const jacketMirror = this.setOpacity(
-          jacketMain.clone().flip(), 0.04
+          jacketMain.clone().flip(), 0.08
         )
         const jacketMirrorBuffer = await jacketMirror.toBuffer()
         // 左 配置:441 145 サイズ: 650x650 不透明度:15%
@@ -119,7 +117,7 @@ class PJSekaiBackgroundGenerator {
           },
           {
             input: jacketMirrorBuffer,
-            top: 683,
+            top: 700,
             left: 797
           },
           {
@@ -140,7 +138,9 @@ class PJSekaiBackgroundGenerator {
     createBackgroundImages (inputDir: string, outputDir: string) : void {
       const files = fs.readdirSync(inputDir)
       files.filter((file: string) => {
-        return file.endsWith('.png') || file.endsWith('.jpg') || file.endsWith('.jpeg')
+        return file.endsWith('.png')
+          || file.endsWith('.jpg')
+          || file.endsWith('.jpeg')
       }).forEach((file: string) => {
         const inputPath = `${inputDir}/${file}`
         const outputPath = `${outputDir}/${file}`
@@ -154,7 +154,7 @@ class PJSekaiBackgroundGenerator {
 export { PJSekaiBackgroundGenerator }
 
 if (require.main === module) {
-  console.log('main module')
+  console.log('==PJSekai Background Generator==')
   const gen = new PJSekaiBackgroundGenerator('./assets')
   gen.createBackgroundImages('./in', './out')
 }
