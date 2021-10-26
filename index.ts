@@ -3,21 +3,19 @@ import fs from 'fs'
 
 class PJSekaiBackgroundGenerator {
   baseImg!: Sharp.Sharp
-  frameImg!: Sharp.Sharp
   patternImg!: Sharp.Sharp
   maskRight!: Sharp.Sharp
   maskLeft!: Sharp.Sharp
 
   constructor(assetsDir: string) {
     const files = fs.readdirSync(assetsDir)
-    const requiredFiles: string[] = ['base.png', 'frame.png', 'pattern.png', 'mask-left.png', 'mask-right.png']
+    const requiredFiles: string[] = ['base.png', 'pattern.png', 'mask-left.png', 'mask-right.png']
     requiredFiles.forEach((file: string) => {
       if (!files.includes(file)) {
         throw new Error(`${file} not found in assets directory`)
       }
     })
     this.baseImg = Sharp(`${assetsDir}/base.png`).png({ palette: true })
-    this.frameImg = Sharp(`${assetsDir}/frame.png`).png({ palette: true })
     this.patternImg = Sharp(`${assetsDir}/pattern.png`).png({ palette: true })
     this.maskLeft = Sharp(`${assetsDir}/mask-left.png`).png({ palette: true })
     this.maskRight = Sharp(`${assetsDir}/mask-right.png`).png({ palette: true })
@@ -93,7 +91,6 @@ class PJSekaiBackgroundGenerator {
         jacket.clone().resize(700, 700),
       )
       const jacketZoomRightBuffer = await jacketZoomRight.toBuffer()
-      // const frameBuffer = await this.frameImg.toBuffer()
       const patternBuffer = await this.patternImg.toBuffer()
       const compositeTmp = tmp.composite([
         {
